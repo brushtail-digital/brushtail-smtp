@@ -1,0 +1,53 @@
+compatibility_level = 3.7
+
+queue_directory = /var/spool/postfix
+command_directory = /usr/sbin
+daemon_directory = /usr/libexec/postfix
+data_directory = /var/lib/postfix
+mail_owner = postfix
+
+# Server
+myhostname = {{HOST}}
+myorigin = $mydomain
+
+unknown_local_recipient_reject_code = 550
+mynetworks_style = host
+mailbox_size_limit = 0
+recipient_delimiter = +
+
+smtpd_sasl_auth_enable = yes
+smtpd_client_restrictions = permit_mynetworks, permit_sasl_authenticated, reject
+smtpd_helo_restrictions = reject_unknown_helo_hostname
+smtpd_sender_restrictions = reject_unknown_sender_domain, reject_authenticated_sender_login_mismatch
+smtpd_sender_login_maps = texthash:/etc/postfix/controlled_envelope_senders
+smtpd_recipient_restrictions = permit_mynetworks, permit_sasl_authenticated
+smtpd_relay_restrictions = permit_mynetworks, permit_sasl_authenticated, defer_unauth_destination
+
+smtpd_tls_cert_file=/etc/letsencrypt/live/{{HOST}}/fullchain.pem
+smtpd_tls_key_file=/etc/letsencrypt/live/{{HOST}}/privkey.pem
+smtpd_tls_security_level = encrypt
+smtpd_tls_auth_only = yes
+
+# Client
+relayhost = {{RELAY}}
+smtp_sasl_auth_enable = yes
+smtp_sasl_password_maps = static:{{RELAY_AUTH}}
+smtp_sasl_security_options = noanonymous
+smtp_sasl_tls_security_options = noanonymous
+
+header_size_limit = 4096000
+broken_sasl_auth_clients = yes
+
+sendmail_path = /usr/sbin/sendmail
+newaliases_path = /usr/bin/newaliases
+mailq_path = /usr/bin/mailq
+setgid_group = postdrop
+html_directory = no
+manpage_directory = /usr/share/man
+sample_directory = /etc/postfix
+readme_directory = /usr/share/doc/postfix/readme
+inet_protocols = ipv4
+meta_directory = /etc/postfix
+shlib_directory = /usr/lib/postfix
+
+maillog_file=/dev/stdout
