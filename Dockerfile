@@ -1,6 +1,6 @@
 FROM alpine:latest
 
-RUN apk --no-cache add certbot cyrus-sasl postfix
+RUN apk --no-cache add certbot cyrus-sasl cyrus-sasl-login postfix
 
 COPY ./config/master.cf /etc/postfix/master.cf
 COPY ./config/main.cf /etc/postfix/main.cf
