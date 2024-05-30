@@ -32,6 +32,7 @@ sed -i 's/{{RELAY}}/'"${RELAY_HOST}"'/g' /etc/postfix/main.cf
 sed -i 's/{{RELAY_AUTH}}/'"${RELAY_AUTH}"'/g' /etc/postfix/main.cf
 
 # Populate sasldb and sender login map
+truncate -s 0 /etc/postfix/controlled_envelope_senders
 args="$@"
 while IFS= read -r line <&3; do
     if [ -n "$line" ]; then
